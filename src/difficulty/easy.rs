@@ -168,10 +168,95 @@ impl<'a> RomanGliph<'a> {
     }
 }
 
+/*
+14. Longest Common Prefix
+https://leetcode.com/problems/longest-common-prefix/
+
+Write a function to find the longest common prefix string amongst an array of strings.
+
+If there is no common prefix, return an empty string "".
+
+Constraints:
+
+1 <= strs.length <= 200
+0 <= strs[i].length <= 200
+strs[i] consists of only lower-case English letters.
+*/
+pub fn longest_common_prefix(strs: Vec<String>) -> String {
+
+    //if we have only one element in the vec the prefix is the element itself
+    if strs.len() == 1 {
+        return strs.first().unwrap().clone();
+    }
+
+    let mut occurences: HashMap<&str, i32> = HashMap::new();
+    let mut max: (&str, i32) = ("", 0);
+
+    for word in &strs {
+        for i in 1..word.len() + 1 {
+            let slice = &word[0..i];
+            let count = occurences.entry(&slice).or_insert(0);
+            *count += 1;
+            
+            if *count > max.1 && slice.len() > max.0.len() {
+                max = (slice, *count);
+            }
+        }
+    }
+
+    println!("prefix = {} max = {}", max.0, max.1);
+
+    match max.1 {
+        1 => "".to_string(),
+        _ => max.0.to_string(),
+    }
+}
+
 #[cfg(test)]
 mod tests {
 
     use super::*;
+
+    // -----------------------
+    // 14. Longest Common Prefix
+    // -----------------------
+
+    #[test]
+    fn test_longest_common_prefix_example_1() {
+        let strs = vec![
+            "flower".to_string(),
+            "flow".to_string(),
+            "flight".to_string(),
+        ];
+        let result = longest_common_prefix(strs);
+        assert_eq!(result, "fl");
+    }
+
+    #[test]
+    fn test_longest_common_prefix_example_2() {
+        let strs = vec!["dog".to_string(), "racecar".to_string(), "car".to_string()];
+        let result = longest_common_prefix(strs);
+        assert_eq!(result, "");
+    }
+
+    #[test]
+    fn test_longest_common_prefix_input_with_single_element() {
+        let strs = vec![
+            "flower".to_string(),
+        ];
+        let result = longest_common_prefix(strs);
+        assert_eq!(result, "flower");        
+    }
+
+    #[test]
+    fn test_longest_common_prefix_single_letter_prefix() {
+        let strs = vec![
+            "ab".to_string(),
+            "a".to_string(),
+        ];
+        let result = longest_common_prefix(strs);
+        assert_eq!(result, "a");        
+    }
 
     // -----------------------
     // 1. Two Sum
@@ -207,7 +292,7 @@ mod tests {
     // -----------------------
     // 9. Palindrome Number
     // -----------------------
-    
+
     #[test]
     fn test_is_palindrome_example_1() {
         let x = 121;
