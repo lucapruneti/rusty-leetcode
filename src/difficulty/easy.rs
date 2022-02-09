@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-pub fn say_hello() {
-    println!("Hello, I'm feeling particularly rusty today!");
+pub fn say_hello(name: &str) {
+    println!("Hello {}, I'm feeling particularly rusty today!", name);
 }
 
 /*
