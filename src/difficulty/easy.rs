@@ -5,7 +5,8 @@ pub fn say_hello() {
 }
 
 /*
-01 - https://leetcode.com/problems/two-sum/
+1. Two Sum
+https://leetcode.com/problems/two-sum/
 
 Given an array of integers nums and an integer target,
 return indices of the two numbers such that they add up to target.
@@ -172,6 +173,10 @@ mod tests {
 
     use super::*;
 
+    // -----------------------
+    // 1. Two Sum
+    // -----------------------
+
     #[test]
     fn test_two_sum_example_1() {
         let nums = vec![2, 7, 11, 15];
@@ -200,7 +205,9 @@ mod tests {
     }
 
     // -----------------------
-
+    // 9. Palindrome Number
+    // -----------------------
+    
     #[test]
     fn test_is_palindrome_example_1() {
         let x = 121;
@@ -222,6 +229,8 @@ mod tests {
         assert!(result == false)
     }
 
+    // -----------------------
+    // 13. Roman to Integer
     // -----------------------
 
     #[test]
