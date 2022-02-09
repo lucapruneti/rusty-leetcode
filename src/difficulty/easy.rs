@@ -213,42 +213,6 @@ mod tests {
     use super::*;
 
     // -----------------------
-    // 14. Longest Common Prefix
-    // -----------------------
-
-    #[test]
-    fn test_longest_common_prefix_example_1() {
-        let strs = vec![
-            "flower".to_string(),
-            "flow".to_string(),
-            "flight".to_string(),
-        ];
-        let result = longest_common_prefix(strs);
-        assert_eq!(result, "fl");
-    }
-
-    #[test]
-    fn test_longest_common_prefix_example_2() {
-        let strs = vec!["dog".to_string(), "racecar".to_string(), "car".to_string()];
-        let result = longest_common_prefix(strs);
-        assert_eq!(result, "");
-    }
-
-    #[test]
-    fn test_longest_common_prefix_input_with_single_element() {
-        let strs = vec!["flower".to_string()];
-        let result = longest_common_prefix(strs);
-        assert_eq!(result, "flower");
-    }
-
-    #[test]
-    fn test_longest_common_prefix_single_letter_prefix() {
-        let strs = vec!["ab".to_string(), "a".to_string()];
-        let result = longest_common_prefix(strs);
-        assert_eq!(result, "a");
-    }
-
-    // -----------------------
     // 1. Two Sum
     // -----------------------
 
@@ -336,5 +300,41 @@ mod tests {
     #[test]
     fn test_roman_to_int_example_3() {
         assert_eq!(1994, roman_to_int("MCMXCIV".to_string()));
+    }
+
+    // -----------------------
+    // 14. Longest Common Prefix
+    // -----------------------
+
+    #[test]
+    fn test_longest_common_prefix_example_1() {
+        let strs = vec![
+            "flower".to_string(),
+            "flow".to_string(),
+            "flight".to_string(),
+        ];
+        let result = longest_common_prefix(strs);
+        assert_eq!(result, "fl");
+    }
+
+    #[test]
+    fn test_longest_common_prefix_example_2() {
+        let strs = vec!["dog".to_string(), "racecar".to_string(), "car".to_string()];
+        let result = longest_common_prefix(strs);
+        assert_eq!(result, "");
+    }
+
+    #[test]
+    fn test_longest_common_prefix_input_with_single_element() {
+        let strs = vec!["flower".to_string()];
+        let result = longest_common_prefix(strs);
+        assert_eq!(result, "flower");
+    }
+
+    #[test]
+    fn test_longest_common_prefix_single_letter_prefix() {
+        let strs = vec!["ab".to_string(), "a".to_string()];
+        let result = longest_common_prefix(strs);
+        assert_eq!(result, "a");
     }
 }
