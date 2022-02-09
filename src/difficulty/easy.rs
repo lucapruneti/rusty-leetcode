@@ -183,7 +183,6 @@ Constraints:
 strs[i] consists of only lower-case English letters.
 */
 pub fn longest_common_prefix(strs: Vec<String>) -> String {
-
     //if we have only one element in the vec the prefix is the element itself
     if strs.len() == 1 {
         return strs.first().unwrap().clone();
@@ -197,19 +196,15 @@ pub fn longest_common_prefix(strs: Vec<String>) -> String {
             let slice = &word[0..i];
             let count = occurences.entry(&slice).or_insert(0);
             *count += 1;
-            
-            if *count > max.1 && slice.len() > max.0.len() {
+
+            //the max is when the counter is eq to strs.len() and the lenght is the greater
+            if *count == strs.len() as i32 && slice.len() > max.0.len() {
                 max = (slice, *count);
             }
         }
     }
 
-    println!("prefix = {} max = {}", max.0, max.1);
-
-    match max.1 {
-        1 => "".to_string(),
-        _ => max.0.to_string(),
-    }
+    max.0.to_string()
 }
 
 #[cfg(test)]
@@ -241,21 +236,16 @@ mod tests {
 
     #[test]
     fn test_longest_common_prefix_input_with_single_element() {
-        let strs = vec![
-            "flower".to_string(),
-        ];
+        let strs = vec!["flower".to_string()];
         let result = longest_common_prefix(strs);
-        assert_eq!(result, "flower");        
+        assert_eq!(result, "flower");
     }
 
     #[test]
     fn test_longest_common_prefix_single_letter_prefix() {
-        let strs = vec![
-            "ab".to_string(),
-            "a".to_string(),
-        ];
+        let strs = vec!["ab".to_string(), "a".to_string()];
         let result = longest_common_prefix(strs);
-        assert_eq!(result, "a");        
+        assert_eq!(result, "a");
     }
 
     // -----------------------
