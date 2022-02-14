@@ -1,5 +1,5 @@
 use std::cmp;
-use std::collections::{BTreeMap, HashSet, LinkedList};
+use std::collections::{HashSet, LinkedList};
 
 pub fn say_hello(name: &str) {
     println!("Hello {}, I'm feeling particularly rusty today!", name);
@@ -132,6 +132,7 @@ Constraints:
 s consists of English letters, digits, symbols and spaces.
 */
 pub fn length_of_longest_substring(s: String) -> i32 {
+    // TODO - Implement with BTreeMap
     let mut dict: HashSet<char> = HashSet::new();
     let mut llist: LinkedList<char> = LinkedList::new();
 
@@ -163,6 +164,112 @@ pub fn length_of_longest_substring(s: String) -> i32 {
     }
 
     cmp::max(max, llist.len()) as i32
+}
+
+/*
+8. String to Integer (atoi)
+https://leetcode.com/problems/string-to-integer-atoi/
+
+Implement the myAtoi(string s) function, which converts a string to a 32-bit signed integer (similar to C/C++'s atoi function).
+
+The algorithm for myAtoi(string s) is as follows:
+
+Read in and ignore any leading whitespace.
+Check if the next character (if not already at the end of the string) is '-' or '+'.
+Read this character in if it is either.
+This determines if the final result is negative or positive respectively.
+Assume the result is positive if neither is present.
+Read in next the characters until the next non-digit character or the end of the input is reached.
+The rest of the string is ignored.
+Convert these digits into an integer (i.e. "123" -> 123, "0032" -> 32).
+If no digits were read, then the integer is 0.
+Change the sign as necessary (from step 2).
+If the integer is out of the 32-bit signed integer range [-2^31, 2^31 - 1], then clamp the integer so that it remains in the range.
+Specifically, integers less than -2^31 should be clamped to -2^31, and integers greater than 2^31 - 1 should be clamped to 2^31 - 1.
+Return the integer as the final result.
+
+Note:
+Only the space character ' ' is considered a whitespace character.
+Do not ignore any characters other than the leading whitespace or the rest of the string after the digits.
+
+Constraints:
+
+0 <= s.length <= 200
+s consists of English letters (lower-case and upper-case), digits (0-9), ' ', '+', '-', and '.'
+*/
+pub fn my_atoi(s: String) -> i32 {
+    if s.is_empty() {
+        return 0;
+    }
+
+    let mut sign: i32 = 1;
+    let mut number: i32 = 0;
+    let mut current_state = AtoiParseState::new();
+
+    for c in s.chars() {
+        current_state = current_state.consume(c);
+        match current_state {
+            AtoiParseState::Trailing => (),
+            AtoiParseState::Sign(s) => sign = s,
+            AtoiParseState::Number(n) => {
+                if sign < 0 && number > 0 {
+                    number *= sign;
+                }
+                number = number.saturating_mul(10);
+                number = number.saturating_add(n * sign);
+            }
+            AtoiParseState::End => break,
+        }
+    }
+
+    number
+}
+
+#[derive(Debug, PartialEq, Eq)]
+enum AtoiParseState {
+    Trailing,
+    Sign(i32),
+    Number(i32),
+    End,
+}
+
+impl AtoiParseState {
+    fn new() -> AtoiParseState {
+        AtoiParseState::Trailing
+    }
+
+    fn consume(&self, c: char) -> AtoiParseState {
+        match self {
+            AtoiParseState::Trailing => {
+                if c == ' ' {
+                    AtoiParseState::Trailing
+                } else if c == '+' {
+                    AtoiParseState::Sign(1)
+                } else if c == '-' {
+                    AtoiParseState::Sign(-1)
+                } else if c.is_ascii_digit() {
+                    AtoiParseState::Number(c.to_digit(10).unwrap() as i32)
+                } else {
+                    AtoiParseState::End
+                }
+            },
+            AtoiParseState::Sign(_) => {
+                if c.is_ascii_digit() {
+                    AtoiParseState::Number(c.to_digit(10).unwrap() as i32)
+                } else {
+                    AtoiParseState::End
+                }
+            },
+            AtoiParseState::Number(_) => {
+                if c.is_ascii_digit() {
+                    AtoiParseState::Number(c.to_digit(10).unwrap() as i32)
+                } else {
+                    AtoiParseState::End
+                }
+            },
+            AtoiParseState::End => AtoiParseState::End,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -307,5 +414,67 @@ mod tests {
         let input = String::from("dvdf");
         let output = length_of_longest_substring(input);
         assert_eq!(output, 3);
+    }
+
+    // -----------------------
+    // 8. String to Integer (atoi)
+    // -----------------------
+
+    #[test]
+    fn test_my_atoi_example_1() {
+        let result = my_atoi(String::from("42"));
+        assert_eq!(result, 42);
+    }
+
+    #[test]
+    fn test_my_atoi_example_1_1() {
+        let result = my_atoi(String::from("+42"));
+        assert_eq!(result, 42);
+    }
+
+    #[test]
+    fn test_my_atoi_example_2() {
+        let result = my_atoi(String::from("   -42"));
+        assert_eq!(result, -42);
+    }
+
+    #[test]
+    fn test_my_atoi_example_3() {
+        let result = my_atoi(String::from("4193 with words"));
+        assert_eq!(result, 4193);
+    }
+
+    #[test]
+    fn test_my_atoi_all_trailing_spaces_input() {
+        let result = my_atoi(String::from("       "));
+        assert_eq!(result, 0);
+    }
+
+    #[test]
+    fn test_my_atoi_trailing_spaces_and_sign_input() {
+        let result = my_atoi(String::from("       +"));
+        assert_eq!(result, 0);
+    }
+
+    #[test]
+    fn test_my_atoi_trailing_spaces_sign_letters_input() {
+        let result = my_atoi(String::from("       +foobar"));
+        assert_eq!(result, 0);
+    }
+
+    #[test]
+    fn test_my_atoi_trailing_spaces_as_zeroes_input() {
+        assert_eq!(0, my_atoi(String::from("  00")));
+        assert_eq!(0, my_atoi(String::from("  -00")));
+        assert_eq!(666, my_atoi(String::from("  00666")));
+        assert_eq!(666, my_atoi(String::from("00666")));
+        assert_eq!(-666, my_atoi(String::from("  -00666")));
+        assert_eq!(666, my_atoi(String::from("  00666foo")));
+    }
+
+    #[test]
+    fn test_my_atoi_integer_overflow() {
+        assert_eq!(i32::MIN, my_atoi(String::from("-91283472332")));
+        assert_eq!(i32::MAX, my_atoi(String::from("91283472332")));
     }
 }
