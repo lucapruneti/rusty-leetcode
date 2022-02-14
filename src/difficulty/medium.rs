@@ -1,3 +1,6 @@
+use std::cmp;
+use std::collections::{BTreeMap, HashSet, LinkedList};
+
 pub fn say_hello(name: &str) {
     println!("Hello {}, I'm feeling particularly rusty today!", name);
 }
@@ -117,6 +120,51 @@ fn add_addends(addend1: i32, addend2: i32, remainder: i32) -> (i32, i32) {
     (res, rem)
 }
 
+/*
+3. Longest Substring Without Repeating Characters
+https://leetcode.com/problems/longest-substring-without-repeating-characters/
+
+Given a string s, find the length of the longest substring without repeating characters.
+
+Constraints:
+
+0 <= s.length <= 5 * 10^4
+s consists of English letters, digits, symbols and spaces.
+*/
+pub fn length_of_longest_substring(s: String) -> i32 {
+    let mut dict: HashSet<char> = HashSet::new();
+    let mut llist: LinkedList<char> = LinkedList::new();
+
+    let mut max = 0;
+
+    for c in s.chars() {
+        if dict.insert(c) {
+            // found a new char in the sequence
+            llist.push_back(c);
+        } else {
+            // found a repeated char in the sequence
+            max = cmp::max(max, llist.len());
+            llist.push_back(c);
+
+            // readjusting the current sequence
+            loop {
+                let front = llist.pop_front();
+                if front.is_none() {
+                    break;
+                }
+
+                let tmp_c = front.unwrap();
+                if tmp_c == c {
+                    break;
+                }
+                dict.remove(&tmp_c);
+            }
+        }
+    }
+
+    cmp::max(max, llist.len()) as i32
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -227,5 +275,37 @@ mod tests {
             result,
             ListNode::create_from_vect(vec![8, 9, 9, 9, 0, 0, 0, 1])
         );
+    }
+
+    // -----------------------
+    // 3. Longest Substring Without Repeating Characters
+    // -----------------------
+
+    #[test]
+    fn test_length_of_longest_substring_example_1() {
+        let input = String::from("abcabcbb");
+        let output = length_of_longest_substring(input);
+        assert_eq!(output, 3);
+    }
+
+    #[test]
+    fn test_length_of_longest_substring_example_2() {
+        let input = String::from("bbbbb");
+        let output = length_of_longest_substring(input);
+        assert_eq!(output, 1);
+    }
+
+    #[test]
+    fn test_length_of_longest_substring_example_3() {
+        let input = String::from("pwwkew");
+        let output = length_of_longest_substring(input);
+        assert_eq!(output, 3);
+    }
+
+    #[test]
+    fn test_length_of_longest_substring_wrong_answer_1() {
+        let input = String::from("dvdf");
+        let output = length_of_longest_substring(input);
+        assert_eq!(output, 3);
     }
 }
